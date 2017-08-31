@@ -11,7 +11,8 @@ module ExchangeRateJt
     def self.build(data_store_type, data_store)
       MAPS[data_store_type].new(data_store)
     rescue
-      raise InvalidDataStoreTypeError
+      raise InvalidDataStoreTypeError, 
+            'Invalid or no data store type specified'
     end
   end
 end

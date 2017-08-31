@@ -47,6 +47,71 @@ RSpec.describe ExchangeRateJt do
     end
   end
 
+  describe '.at' do
+    let(:data_store) { double('Data store') }
+
+    before do
+      setup_config
+    end
+    
+    context 'with valid params' do
+      before do
+        allow(Date).to receive(:today).and_return Date.new(2017, 8, 31)
+      end
+
+      it 'retrieves the requested information in hash format' do
+        expect(ExchangeRateJt::DataStoreFactory).to receive(:build)
+          .with(:pstore, pstore_connection_string).and_return data_store
+        expect(data_store).to receive(:fetch_rate)
+          .with(:aug_31_2017, 'GBP').and_return 1
+        expect(data_store).to receive(:fetch_rate)
+          .with(:aug_31_2017, 'USD').and_return 1.5
+
+        result = described_class.at(Date.today, 'GBP', 'USD')
+
+        expect(result).to eq(status: :success, rate: 1.5)
+      end
+    end
+
+    context 'when the date is invalid' do
+      it 'raises a LookupError' do
+        expect { described_class.at('wibble', 'GBP', 'USD') }
+          .to raise_error ExchangeRateJt::LookupError
+      end
+    end
+
+    context 'when the date is in the future' do
+      let(:future_date) { Date.new(2050, 8, 31) }
+
+      before do
+        allow(Date).to receive(:today).and_return(Date.new(2017, 1, 1))
+      end
+
+      it 'raises a LookupError' do
+        expect { described_class.at(future_date, 'GBP', 'USD') }
+          .to raise_error ExchangeRateJt::LookupError
+      end
+    end
+
+    context 'when the exchange rate data cannot be fetched' do
+      before do
+        allow(Date).to receive(:today).and_return(Date.new(2017, 1, 1))
+      end
+
+      it 'raises a LookupError' do
+        expect(ExchangeRateJt::DataStoreFactory).to receive(:build)
+          .with(:pstore, pstore_connection_string).and_return data_store
+        expect(data_store).to receive(:fetch_rate)
+          .with(:jan_01_2017, 'GBP').and_return 1
+        expect(data_store).to receive(:fetch_rate)
+          .with(:jan_01_2017, 'USD').and_return nil
+
+        expect { described_class.at(Date.today, 'GBP', 'USD') }
+          .to raise_error ExchangeRateJt::LookupError
+      end
+    end
+  end
+
   private
 
   def setup_config
