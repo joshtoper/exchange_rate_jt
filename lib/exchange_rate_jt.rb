@@ -1,5 +1,6 @@
 require "exchange_rate_jt/version"
 require 'exchange_rate_jt/configuration'
+require 'exchange_rate_jt/data_store_factory'
 
 module ExchangeRateJt
   class << self
@@ -8,10 +9,6 @@ module ExchangeRateJt
 
   def self.configuration
     @configuration ||= Configuration.new
-  end
-
-  def self.reset
-    @configuration = Configuration.new
   end
 
   def self.configure

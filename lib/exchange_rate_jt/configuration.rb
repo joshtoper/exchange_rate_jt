@@ -1,10 +1,10 @@
 module ExchangeRateJt
   class Configuration
-    attr_accessor :cache_store, :cache_type, :source
+    attr_accessor :data_store, :data_store_type, :source
 
     def initialize
-      @cache_store = nil
-      @cache_type = nil
+      @data_store = nil
+      @data_store_type = nil
       @source = nil
     end
   end
