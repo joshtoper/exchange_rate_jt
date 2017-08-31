@@ -1,17 +1,17 @@
 # coding: utf-8
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "ExchangeRateJt/version"
+require "exchange_rate_jt/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "ExchangeRateJt"
   spec.version       = ExchangeRateJt::VERSION
   spec.authors       = ["Joshua Toper"]
-  spec.email         = ["josh@borrowmydoggy.com"]
+  spec.email         = ["work@joshtoper.co.uk"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Minimal gem for calculating exchange rates.}
+  spec.description   = %q{This is a self-contained gem which calculates exchange rates from a variety of sources. The gem caches all requests so that lookups can be performant.}
+  spec.homepage      = "http://www.joshtoper.co.uk"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

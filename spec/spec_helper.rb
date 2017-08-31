@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "ExchangeRateJt"
+require "exchange_rate_jt"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
