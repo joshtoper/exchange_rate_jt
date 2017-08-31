@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "exchange_rate_jt/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "ExchangeRateJt"
+  spec.name          = "exchange_rate_jt"
   spec.version       = ExchangeRateJt::VERSION
   spec.authors       = ["Joshua Toper"]
   spec.email         = ["work@joshtoper.co.uk"]

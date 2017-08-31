@@ -9,8 +9,9 @@ module ExchangeRateJt
       attr_reader :data_store
 
       def initialize(data_store)
-        raise InvalidConnectionTypeError,
-              'Invalid connection type' unless data_store.is_a?(PStore)
+        unless data_store.is_a?(PStore)
+          raise InvalidConnectionTypeError, 'Invalid connection type'
+        end
         @data_store = data_store
       end
 
