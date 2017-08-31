@@ -26,7 +26,7 @@ module ExchangeRateJt
       def fetch_rate(date, currency)
         return 1 if currency == 'EUR'
         rate = data_store.transaction { data_store[date][currency] }
-        raise RateNotFoundError if rate.nil?
+        raise RateNotFoundError, 'Exchange rate not found' if rate.nil?
         rate.to_f
       end
     end
