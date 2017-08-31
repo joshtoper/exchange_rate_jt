@@ -9,8 +9,8 @@ module ExchangeRateJt
       
       context 'with a valid type' do
         it 'returns a data store handler for the supplied type' do
-          expect(PStore).to receive(:new).with(pstore_connection_string)
-            .and_return pstore
+          expect(DataStore::PStoreAdaptor).to receive(:new)
+            .with(pstore_connection_string).and_return pstore
 
           store = described_class.build(:pstore, pstore_connection_string)
 

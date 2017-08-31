@@ -1,4 +1,4 @@
-require_relative 'p_store'
+require_relative 'data_store/p_store_adaptor'
 
 module ExchangeRateJt
   class InvalidDataStoreTypeError < StandardError; end
@@ -6,7 +6,7 @@ module ExchangeRateJt
   # DataStoreFactory builds and returns an instance of the
   # appropriate data store handler for the defined data store type
   class DataStoreFactory
-    MAPS = { pstore: PStore }.freeze
+    MAPS = { pstore: DataStore::PStoreAdaptor }.freeze
     
     def self.build(data_store_type, data_store)
       MAPS[data_store_type].new(data_store)

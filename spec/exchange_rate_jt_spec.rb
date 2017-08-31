@@ -3,7 +3,7 @@ require "spec_helper"
 RSpec.describe ExchangeRateJt do
   let(:pstore_connection_string) { double('PStore connection string') }
 
-  it "has a version number" do
+  it 'has a version number' do
     expect(ExchangeRateJt::VERSION).not_to be nil
   end
 
@@ -12,12 +12,38 @@ RSpec.describe ExchangeRateJt do
       setup_config
     end
 
-    it 'is externally configurable' do
+    it 'allows the gem to be configured by the client' do
       config = ExchangeRateJt.configuration
       
       expect(config.source).to eq :ecb
       expect(config.data_store_type).to eq :pstore
       expect(config.data_store).to eq pstore_connection_string
+    end
+  end
+
+  describe '.update_exchange_rates' do
+    let(:rates) { double('Obtained rates') }
+    let(:rates_source) { double('Rates source') }
+    let(:pstore_instance) { double('PStore instance') }
+
+    before do
+      setup_config
+    end
+
+    it 'fetches and persists the latest exchange rates from the specified source' do
+      expect(ExchangeRateJt::RatesSourceFactory)
+        .to receive(:build).with(:ecb).and_return rates_source
+      
+      expect(rates_source).to receive(:fetch_rates).and_return rates
+      
+      expect(ExchangeRateJt::DataStoreFactory).to receive(:build)
+        .with(:pstore, pstore_connection_string)
+        .and_return pstore_instance
+      
+      expect(pstore_instance).to receive(:persist_rates).with(rates)
+        .and_return true
+
+      ExchangeRateJt.update_exchange_rates
     end
   end
 
