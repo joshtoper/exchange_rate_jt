@@ -17,10 +17,11 @@ module ExchangeRateJt
       private
 
       def fetch_source
-        Nokogiri::XML(open(REPOSITORY_URL))
-      rescue
-        raise CouldNotFetchDataError,
-              'There was an error fetching the data from the source'
+        Nokogiri::XML(open(REPOSITORY_URL, read_timeout: 5000))
+      rescue Timeout::Error
+        handle_fetch_error('the request timed out')
+      rescue OpenURI::HTTPError => error
+        handle_fetch_error(error)
       end
 
       def parse(doc)
@@ -35,12 +36,17 @@ module ExchangeRateJt
           end
         end
       rescue
-        raise ParseError,
-              'There was an error parsing the document'
+        raise ParseError, 'There was an error parsing the document'
       end
 
       def format_date(time_as_string)
         DateTime.parse(time_as_string).strftime('%b_%d_%Y').downcase.to_sym
+      end
+
+      def handle_fetch_error(error)
+        response = error.io
+        code = response.status[0]
+        raise CouldNotFetchDataError, "There was an problem fetching the data from the source - #{code}"
       end
     end
   end

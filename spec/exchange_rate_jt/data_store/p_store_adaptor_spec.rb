@@ -24,13 +24,13 @@ module ExchangeRateJt
         end
       end
 
-      describe '#persist_rates' do
+      describe '#persist' do
         let(:file_location) { File.expand_path(File.dirname(__FILE__) + '../../../support/store.test') }
         let(:connection_string) { PStore.new(file_location) }
         let(:store) { described_class.new(connection_string) }
         
         it 'persists the supplied exchange rate data' do
-          store.persist_rates(exchange_rate_data)
+          store.persist(:aug_31_2017, { "USD" => "1.1825" })
 
           connection_string.transaction do
             expect(connection_string[:aug_31_2017]['USD']).to eq '1.1825'
@@ -38,37 +38,27 @@ module ExchangeRateJt
         end
       end
 
-      describe '#fetch_rate' do
+      describe '#fetch' do
         let(:file_location) { File.expand_path(File.dirname(__FILE__) + '../../../support/store.test') }
         let(:connection_string) { PStore.new(file_location) }
         let(:store) { described_class.new(connection_string) }
 
         before do
-          store.persist_rates(exchange_rate_data)
+          store.persist(:aug_31_2017, { "USD" => "1.1825" })
         end
 
         context 'when the rate can be found' do
-          it 'returns the rate as a float' do
-            expect(store.fetch_rate(:aug_31_2017, 'USD')).to eq 1.1825
+          it 'returns the rate' do
+            expect(store.fetch(:aug_31_2017, 'USD')).to eq '1.1825'
           end
-        end
-
-        context 'when the currency specified is the base currency' do
-          pending("something else getting finished")
         end
 
         context 'when the rate cannot be found' do
-          it 'raises a RateNotFoundError' do
-            expect { store.fetch_rate(:aug_31_2017, 'ABC') }
-              .to raise_error RateNotFoundError
+          it 'raises a DataNotFoundError' do
+            expect { store.fetch(:aug_31_2017, 'ABC') }
+              .to raise_error DataNotFoundError
           end
         end
-      end
-
-      private
-
-      def exchange_rate_data
-        { :aug_31_2017=>{ "USD"=>"1.1825" } }
       end
     end
   end
