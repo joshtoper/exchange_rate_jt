@@ -28,7 +28,7 @@ module ExchangeRateJt
       base = fetch_rate(date, base)
       counter = fetch_rate(date, counter)
 
-      rate = counter / base
+      rate = counter.to_f / base.to_f
 
       { status: :success, rate: BigDecimal.new(rate, 5) }
     end
