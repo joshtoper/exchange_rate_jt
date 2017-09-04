@@ -26,6 +26,8 @@ module ExchangeRateJt
         data = data_store.transaction { data_store[key][value] }
         raise DataNotFoundError, 'Data not found' if data.nil?
         data
+      rescue
+        raise DataNotFoundError, 'Data not found'
       end
     end
   end
