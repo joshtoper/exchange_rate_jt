@@ -1,8 +1,6 @@
 # ExchangeRateJt
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/exchange_rate_jt`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This is a simple gem whose primary purpose is to retrieve up-to-date exchange rate data.
 
 ## Installation
 
@@ -22,13 +20,51 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Configuration
+Before using the gem, you will need to specify some configuration values, an example of which is shown below:
 
-## Development
+```
+ExchangeRateJt.configure do |config|
+  config.source = :ecb
+  config.data_store_type = :pstore
+  config.data_store = PStore.new('store.my_pstore')
+  config.default_currency = :EUR
+end
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+At time of writing, the only data source is the European Central Bank, and the only storage type is Ruby's PStore. However, the gem is structured to make extension very simple.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+### Methods
+
+The gem currently performs three operations:
+
+#### Fetching latest rates
+
+```
+ExchangeRateJt.update_exchange_rates
+```
+
+This will fetch the latest rates from the specified source, and persist them to the specified storage.
+
+#### Calculating an exchange rate for a given day
+
+```
+date = Date.today
+ExchangeRateJt.at(date, 'GBP', 'USD')
+
+==> { status: :success, rate: 1.2345 }
+```
+
+This will return the exchange rate between two currencies for a given day, providing the data is available.
+
+#### Fetching a list of available currencies
+
+```
+ExchangeRateJt.currency_list
+```
+
+This returns an array of all available currencies for the current rates source.
+
 
 ## Contributing
 
