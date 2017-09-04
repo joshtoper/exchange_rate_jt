@@ -8,10 +8,15 @@ module ExchangeRateJt
 
     class ECB
       REPOSITORY_URL = 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml'.freeze
+      CURRENCY_LIST = %w(AUD BGN BRL CAD CHF CNY CZK DKK GBP HKD HRK HUF IDR ILS INR JPY KRW MXN MYR NOK NZD PHP PLN RON RUB SEK SGD THB TRY USD ZAR).freeze
 
       def fetch_rates
         doc = fetch_source
         parse(doc)
+      end
+
+      def currency_list
+        CURRENCY_LIST
       end
 
       private

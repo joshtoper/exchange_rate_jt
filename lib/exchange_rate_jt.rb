@@ -29,4 +29,8 @@ module ExchangeRateJt
   def self.at(date, base, counter)
     exchange_rates.at(date, base, counter)
   end
+
+  def self.currency_list
+    exchange_rates.currency_list
+  end
 end

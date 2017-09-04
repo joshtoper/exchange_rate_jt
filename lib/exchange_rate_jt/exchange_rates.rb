@@ -14,7 +14,7 @@ module ExchangeRateJt
     end
 
     def update
-      rates = RatesSourceFactory.build(configuration.source).fetch_rates
+      rates = rates_source.fetch_rates
       rates.each { |date, values| data_store.persist(date, values) }
       true
     rescue => exception
@@ -33,12 +33,24 @@ module ExchangeRateJt
       { status: :success, rate: BigDecimal.new(rate, 5) }
     end
 
+    def currency_list
+      rates_source.currency_list
+    end
+
     private
 
     attr_reader :configuration
 
     def data_store
       @data_store ||= build_data_store
+    end
+
+    def rates_source
+      @rates_source ||= build_rates_source
+    end
+
+    def build_rates_source
+      RatesSourceFactory.build(configuration.source)
     end
 
     def build_data_store
